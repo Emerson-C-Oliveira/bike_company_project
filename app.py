@@ -1,14 +1,12 @@
-import pandas as pd
 import streamlit as st
-
+import pandas as pd
 import src.answers as asw
 from src.extraction import load_data
 
 st.set_page_config(layout="wide")
 
-
 def create_dataframe_section(df):
-    st.title("Sctions - Database Description")
+    st.title("Sections - Database Description")
 
     col_1, col_2 = st.columns(2)
 
@@ -86,7 +84,6 @@ def create_main_layout():
     create_dataframe_section(df)
 
     create_answers_section(df)
-
 
 if __name__ == "__main__":
     create_main_layout()

@@ -3,6 +3,7 @@ from io import BytesIO
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import xlsxwriter
 
 
 def rd1_question_9(df):
@@ -247,30 +248,28 @@ def rd3_question_7(df):
 
     st.dataframe(df_selected)
 
-    df_xlsx = to_excel(df_selected)
+    # Convert DataFrame to CSV bytes
+    csv_data = df_selected.to_csv(index=False).encode('utf-8')
+
+    # # Download button for CSV
+    # st.download_button(
+    #     label="Download as CSV",
+    #     data=csv_data,
+    #     file_name="buying_suggestions.csv",
+    #     mime="text/csv"
+    # )
+
+    # Excel download button using BytesIO
+    excel_output = BytesIO()
+    with pd.ExcelWriter(excel_output, engine='xlsxwriter') as writer:
+        df_selected.to_excel(writer, index=False, sheet_name='Sheet1')
+    excel_data = excel_output.getvalue()
 
     st.download_button(
-        label="📥 Download Buyinbg Suggestions",
-        data=df_xlsx,
-        file_name="buing_suggestions.xlsx",
+        label="📥 Download as XLSX",
+        data=excel_data,
+        file_name="buying_suggestions.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     return None
-
-
-def to_excel(df):
-    output = BytesIO()
-
-    writer = pd.ExcelWriter(output, engine="xlsxwriter")
-
-    df.to_excel(writer, index=False, sheet_name="Sheet1")
-
-    worksheet = writer.sheets["Sheet1"]
-
-    worksheet.set_column("A:A", None)
-
-    writer.save()
-
-    processed_data = output.getvalue()
-
-    return processed_data
